@@ -35,29 +35,26 @@ class _SignUpPageState extends State<SignUpPage> {
     if (password != confirmPassword) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Erro'),
-          content: Text('As senhas não coincidem'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+        builder:
+            (context) => AlertDialog(
+              title: Text('Erro'),
+              content: Text('As senhas não coincidem'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
       return;
     }
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.0.194:3000/usuario/cadastro'),
+        Uri.parse('https://4bbb-191-58-115-10.ngrok-free.app/auth/cadastro'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'name': name,
-          'email': email,
-          'password': password,
-        }),
+        body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
 
       if (response.statusCode == 201) {
@@ -65,40 +62,39 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.pushReplacementNamed(
           context,
           '/home',
-          arguments: {
-            'nome': name,
-            'email': email,
-          },
+          arguments: {'nome': name, 'email': email},
         );
       } else {
         final error = jsonDecode(response.body);
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: Text('Erro'),
-            content: Text(error['message'] ?? 'Erro ao cadastrar'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text('OK'),
+          builder:
+              (context) => AlertDialog(
+                title: Text('Erro'),
+                content: Text(error['message'] ?? 'Erro ao cadastrar'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text('OK'),
+                  ),
+                ],
               ),
-            ],
-          ),
         );
       }
     } catch (e) {
       showDialog(
         context: context,
-        builder: (context) => AlertDialog(
-          title: Text('Erro'),
-          content: Text('Não foi possível conectar ao servidor.'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: Text('OK'),
+        builder:
+            (context) => AlertDialog(
+              title: Text('Erro'),
+              content: Text('Não foi possível conectar ao servidor.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text('OK'),
+                ),
+              ],
             ),
-          ],
-        ),
       );
     }
   }
@@ -181,7 +177,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     SizedBox(height: 30),
                     Row(
                       children: [
-                        Expanded(child: Divider(thickness: 0.5, color: Colors.grey[500])),
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[500],
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text(
@@ -189,7 +190,12 @@ class _SignUpPageState extends State<SignUpPage> {
                             style: TextStyle(color: Colors.black),
                           ),
                         ),
-                        Expanded(child: Divider(thickness: 0.5, color: Colors.grey[500])),
+                        Expanded(
+                          child: Divider(
+                            thickness: 0.5,
+                            color: Colors.grey[500],
+                          ),
+                        ),
                       ],
                     ),
                     SizedBox(height: 30),

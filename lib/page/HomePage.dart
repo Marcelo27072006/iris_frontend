@@ -3,6 +3,7 @@ import '/components/HomePageComponents/desafioCaixa.dart';
 import '/components/HomePageComponents/infoPontos.dart';
 import '../components/HomePageComponents/premioCaixaHomePage.dart';
 import '../components/HomePageComponents/usoCaixa.dart';
+import '../page/perfilPage.dart'; // ✅ Import da tela de perfil
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
@@ -30,12 +31,22 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text(
+                children: [
+                  const Text(
                     "Iris",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  Icon(Icons.person, size: 50, color: Colors.grey),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.person, size: 50, color: Colors.grey),
+                  ),
                 ],
               ),
             ),
@@ -65,8 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
                             color: Colors.white,
                           ),
                         ),
-                        TextSpan(
-                          style: const TextStyle(
+                        const TextSpan(
+                          style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w300,
                             color: Color.fromARGB(220, 214, 214, 214),
@@ -85,7 +96,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         titulo: "Pontos Disponíveis",
                         texto: "Esses são os pontos que você acumulou.",
                       ),
-
                       InfoPontos(
                         valor: "4.056",
                         legenda: "Pontos dis..",
@@ -111,10 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             LayoutBuilder(
               builder: (context, constraints) {
-                int crossAxisCount =
-                    constraints.maxWidth < 350
-                        ? 1
-                        : constraints.maxWidth < 600
+                int crossAxisCount = constraints.maxWidth < 350
+                    ? 1
+                    : constraints.maxWidth < 600
                         ? 2
                         : 3;
                 return GridView.count(
@@ -162,17 +171,9 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  premioCaixa(
-                    "Camiseta exclusiva",
-                    Icons.emoji_events,
-                    "5.000 pontos",
-                  ),
+                  premioCaixa("Camiseta exclusiva", Icons.emoji_events, "5.000 pontos"),
                   const SizedBox(height: 10),
-                  premioCaixa(
-                    "Caneca personalizada",
-                    Icons.local_cafe,
-                    "2.000 pontos",
-                  ),
+                  premioCaixa("Caneca personalizada", Icons.local_cafe, "2.000 pontos"),
                   const SizedBox(height: 10),
                   premioCaixa("Adesivos", Icons.sticky_note_2, "1.000 pontos"),
                   const SizedBox(height: 10),

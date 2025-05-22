@@ -1,65 +1,3 @@
-// // import 'package:flutter/material.dart';
-// // // import 'page/login_page.dart';
-// // // import 'page/SignUpPage.dart';
-// // import 'page/login_teste.dart';
-
-// // void main() {
-// //   runApp(const MyApp());
-// // }
-
-// // class MyApp extends StatelessWidget {
-// //   const MyApp({super.key});
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return MaterialApp(debugShowCheckedModeBanner: false,
-// //     home: login_teste());
-// //   }
-// // }
-// import 'package:flutter/material.dart';
-// import 'page/testes/login_teste.dart';
-// import 'page/testes/home_page.dart'; // MyHomePage
-// import 'page/testes/SignUpPage_test.dart'; // SignUpPage
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class MyApp extends StatelessWidget {
-//   const MyApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       initialRoute: '/login',
-//       onGenerateRoute: (settings) {
-//         // Rota para home recebendo argumentos
-//         if (settings.name == '/home') {
-//           final args = settings.arguments as Map<String, dynamic>?;
-
-//           return MaterialPageRoute(
-//             builder: (context) => MyHomePage(
-//               title: 'Página Inicial',
-//               nome: args?['nome'] ?? 'Usuário',
-//               email: args?['email'] ?? '',
-//             ),
-//           );
-//         }
-
-//         // Rotas padrão
-//         switch (settings.name) {
-//           case '/login':
-//             return MaterialPageRoute(builder: (_) => const login_teste());
-//           case '/signup':
-//             return MaterialPageRoute(builder: (_) => const SignUpPage());
-//           default:
-//             return MaterialPageRoute(builder: (_) => const login_teste());
-//         }
-//       },
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'page/testes/login_teste.dart';
 import 'page/testes/home_page.dart'; // MyHomePage
@@ -106,6 +44,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const login_teste());
         }
       },
+      // home: MyHomePage(title: "Pagina inicial")
     );
   }
 }

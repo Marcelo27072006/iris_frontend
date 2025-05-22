@@ -17,10 +17,10 @@ class _LoginPageState extends State<login_teste> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final String baseUrl = 'http://192.168.0.194:3000';
+  final String baseUrl = 'https://4bbb-191-58-115-10.ngrok-free.app';
 
   Future<void> loginUser(String email, String password) async {
-    final String url = '$baseUrl/usuario/login';
+    final String url = '$baseUrl/auth/login';
 
     try {
       final response = await http.post(
@@ -110,7 +110,7 @@ class _LoginPageState extends State<login_teste> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(75),
                         child: Image.asset(
-                          'assets/images/iris.png',
+                          'assets/images/iris.jpg',
                           fit: BoxFit.cover,
                         ),
                       ),

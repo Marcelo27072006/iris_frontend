@@ -3,6 +3,7 @@ import '/components/HomePageComponents/desafioCaixa.dart';
 import '/components/HomePageComponents/infoPontos.dart';
 import '/components/HomePageComponents/premioCaixaHomePage.dart';
 import '/components/HomePageComponents/usoCaixa.dart';
+import '/page/perfilPage.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -62,7 +63,21 @@ class _MyHomePageState extends State<MyHomePage> {
                     "Iris",
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-                  const Icon(Icons.person, size: 50, color: Colors.grey),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const UserProfileScreen(),
+                        ),
+                      );
+                    },
+                    child: const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -106,10 +121,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const SizedBox(height: 10),
                   Text(
                     "Email: $emailUsuario",
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                   const SizedBox(height: 30),
                   Row(
@@ -146,9 +158,10 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             LayoutBuilder(
               builder: (context, constraints) {
-                int crossAxisCount = constraints.maxWidth < 350
-                    ? 1
-                    : constraints.maxWidth < 600
+                int crossAxisCount =
+                    constraints.maxWidth < 350
+                        ? 1
+                        : constraints.maxWidth < 600
                         ? 2
                         : 3;
                 return GridView.count(
