@@ -12,19 +12,19 @@ class _RankingPageState extends State<RankingPage> {
   final List<Map<String, dynamic>> rankingList = [
     {
       "position": "1",
-      "name": "Caio Nunes",
+      "name": "Caio",
       "points": "100 pontos",
       "color": Colors.blueAccent,
     },
     {
       "position": "2",
-      "name": "Marcelo Corno",
+      "name": "Marcelo",
       "points": "95 pontos",
       "color": Colors.greenAccent,
     },
     {
       "position": "3",
-      "name": "Leandro Gay",
+      "name": "Leandro",
       "points": "90 pontos",
       "color": Colors.purpleAccent,
     },

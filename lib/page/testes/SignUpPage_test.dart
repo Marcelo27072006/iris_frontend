@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('https://4bbb-191-58-115-10.ngrok-free.app/auth/cadastro'),
+        Uri.parse('http://192.168.100.112:3000/auth/cadastro'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );

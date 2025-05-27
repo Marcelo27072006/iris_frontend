@@ -6,18 +6,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/styleComponents/my_buttom.dart';
 import '../../components/styleComponents/my_textField.dart';
 
-class login_teste extends StatefulWidget {
-  const login_teste({super.key});
+class LoginTeste extends StatefulWidget {
+  const LoginTeste({super.key});
 
   @override
-  State<login_teste> createState() => _LoginPageState();
+  State<LoginTeste> createState() => _LoginTesteState();
 }
 
-class _LoginPageState extends State<login_teste> {
+class _LoginTesteState extends State<LoginTeste> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final String baseUrl = 'https://4bbb-191-58-115-10.ngrok-free.app';
+  final String baseUrl = 'http://192.168.100.112:3000';
 
   Future<void> loginUser(String email, String password) async {
     final String url = '$baseUrl/auth/login';
@@ -31,30 +31,25 @@ class _LoginPageState extends State<login_teste> {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-
         final token = data['token'];
         final user = data['user'];
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', token);
-
-        // Pegando dados do usuário diretamente da resposta
-        final String nomeUsuario = user['name'] ?? 'Usuário';
-        final String emailUsuario = user['email'] ?? email;
+        if (token != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+          await prefs.setString('nome', user['name'] ?? 'Usuário');
+          await prefs.setString('email', user['email'] ?? email);
+        }
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login feito com sucesso!')),
         );
 
-        Navigator.pushReplacementNamed(
-          context,
-          '/home',
-          arguments: {'nome': nomeUsuario, 'email': emailUsuario},
-        );
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
-        print('Erro: ${response.body}');
+        final error = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Email ou senha inválidos')),
+          SnackBar(content: Text(error['message'] ?? 'Email ou senha inválidos')),
         );
       }
     } catch (e) {
@@ -70,9 +65,9 @@ class _LoginPageState extends State<login_teste> {
     final password = passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Preencha todos os campos')),
+      );
       return;
     }
 
@@ -117,7 +112,7 @@ class _LoginPageState extends State<login_teste> {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Bem vindo de volta à Iris!',
+                      'Bem-vindo de volta à Iris!',
                       style: TextStyle(color: Colors.black, fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
@@ -131,7 +126,7 @@ class _LoginPageState extends State<login_teste> {
                     const SizedBox(height: 20),
                     MyTextfield(
                       Controller: passwordController,
-                      hintText: 'Password',
+                      hintText: 'Senha',
                       prefixIcon: const Icon(Icons.lock),
                       obscureText: true,
                     ),

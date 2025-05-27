@@ -1,47 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '/components/HomePageComponents/desafioCaixa.dart';
 import '/components/HomePageComponents/infoPontos.dart';
 import '/components/HomePageComponents/premioCaixaHomePage.dart';
 import '/components/HomePageComponents/usoCaixa.dart';
-import '/page/perfilPage.dart';
+import '/page/UserProfilePage.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({
-    super.key,
-    required this.title,
-    this.nome = '',
-    this.email = '',
-  });
+  const MyHomePage({super.key, required this.title});
 
   final String title;
-  final String nome;
-  final String email;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  late String nomeUsuario;
-  late String emailUsuario;
+  String nomeUsuario = '';
+  String emailUsuario = '';
   double tempoDeUsoHoras = 16;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
 
-    // Pega os argumentos da rota, se existirem
-    final args =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final nome = prefs.getString('nome');
+    final email = prefs.getString('email');
 
-    if (args != null) {
-      nomeUsuario = args['nome'] ?? widget.nome;
-      emailUsuario = args['email'] ?? widget.email;
-    } else {
-      // Caso não tenha argumentos na rota, usa os do construtor
-      nomeUsuario = widget.nome;
-      emailUsuario = widget.email;
-    }
+    print('NOME SALVO: $nome');
+    print('EMAIL SALVO: $email');
+
+    setState(() {
+      nomeUsuario = (nome == null || nome.isEmpty) ? 'Usuário' : nome;
+      emailUsuario = (email == null || email.isEmpty) ? 'sem-email' : email;
+    });
   }
 
   @override
@@ -68,7 +65,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const UserProfileScreen(),
+                          builder: (context) => const UserProfilePage(),
                         ),
                       );
                     },
@@ -105,14 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontSize: 26,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
-                          ),
-                        ),
-                        const TextSpan(
-                          text: "",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            color: Color.fromARGB(220, 214, 214, 214),
                           ),
                         ),
                       ],
