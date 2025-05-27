@@ -34,6 +34,8 @@ class MyApp extends StatelessWidget {
               builder:
                   (_) => MyHomePage(
                     title: 'Página Inicial',
+                    nome: args?['nome'] ?? '',
+                    email: args?['email'] ?? '',
                   ),
             );
 

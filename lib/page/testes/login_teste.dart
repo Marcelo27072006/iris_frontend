@@ -37,19 +37,26 @@ class _LoginTesteState extends State<LoginTeste> {
         if (token != null) {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
-          await prefs.setString('nome', user['name'] ?? 'Usuário');
-          await prefs.setString('email', user['email'] ?? email);
         }
+
+        final String nomeUsuario = user['name'] ?? 'Usuário';
+        final String emailUsuario = user['email'] ?? email;
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login feito com sucesso!')),
         );
 
-        Navigator.pushReplacementNamed(context, '/home');
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'nome': nomeUsuario, 'email': emailUsuario},
+        );
       } else {
         final error = jsonDecode(response.body);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(error['message'] ?? 'Email ou senha inválidos')),
+          SnackBar(
+            content: Text(error['message'] ?? 'Email ou senha inválidos'),
+          ),
         );
       }
     } catch (e) {
@@ -65,9 +72,9 @@ class _LoginTesteState extends State<LoginTeste> {
     final password = passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Preencha todos os campos')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
       return;
     }
 

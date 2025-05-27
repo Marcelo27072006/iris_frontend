@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
 import '/components/HomePageComponents/desafioCaixa.dart';
 import '/components/HomePageComponents/infoPontos.dart';
 import '/components/HomePageComponents/premioCaixaHomePage.dart';
@@ -8,37 +6,45 @@ import '/components/HomePageComponents/usoCaixa.dart';
 import '/page/UserProfilePage.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.nome = '',
+    this.email = '',
+  });
 
   final String title;
+  final String nome;
+  final String email;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String nomeUsuario = '';
-  String emailUsuario = '';
-  double tempoDeUsoHoras = 16;
+  late String nomeUsuario;
+  late String emailUsuario;
 
   @override
   void initState() {
     super.initState();
-    _loadUserData();
+    // Inicializa com os valores vindos do widget, caso não tenha argumentos ainda
+    nomeUsuario = widget.nome;
+    emailUsuario = widget.email;
   }
 
-  Future<void> _loadUserData() async {
-    final prefs = await SharedPreferences.getInstance();
-    final nome = prefs.getString('nome');
-    final email = prefs.getString('email');
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
 
-    print('NOME SALVO: $nome');
-    print('EMAIL SALVO: $email');
-
-    setState(() {
-      nomeUsuario = (nome == null || nome.isEmpty) ? 'Usuário' : nome;
-      emailUsuario = (email == null || email.isEmpty) ? 'sem-email' : email;
-    });
+    if (args != null) {
+      setState(() {
+        nomeUsuario = args['nome'] ?? widget.nome;
+        emailUsuario = args['email'] ?? widget.email;
+      });
+    }
   }
 
   @override
@@ -151,8 +157,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     constraints.maxWidth < 350
                         ? 1
                         : constraints.maxWidth < 600
-                        ? 2
-                        : 3;
+                            ? 2
+                            : 3;
                 return GridView.count(
                   shrinkWrap: true,
                   crossAxisCount: crossAxisCount,
