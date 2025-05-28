@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'page/testes/login_teste.dart';
-import 'page/testes/home_page.dart';
-import 'page/testes/SignUpPage_test.dart';
-import 'page/routes/splash_screen.dart';
+import 'page/loginPage.dart';
+import 'page/home_page.dart';
+import 'page/SignUpPage.dart';
+import 'page//splash_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             return MaterialPageRoute(builder: (_) => const SplashScreen());
 
           case '/login':
-            return MaterialPageRoute(builder: (_) => const LoginTeste());
+            return MaterialPageRoute(builder: (_) => const loginPage());
 
           case '/signup':
             return MaterialPageRoute(builder: (_) => const SignUpPage());
@@ -40,8 +40,7 @@ class MyApp extends StatelessWidget {
             );
 
           default:
-            //redireciona para login se rota não reconhecida
-            return MaterialPageRoute(builder: (_) => const LoginTeste());
+            return MaterialPageRoute(builder: (_) => const loginPage());
         }
       },
     );

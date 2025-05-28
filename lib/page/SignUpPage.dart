@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import '../../components/styleComponents/my_buttom.dart';
+import '../components/styleComponents/my_buttom.dart';
 import '/components/styleComponents/my_textField.dart';
 
 class SignUpPage extends StatefulWidget {

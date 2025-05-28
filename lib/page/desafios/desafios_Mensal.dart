@@ -98,19 +98,19 @@ class _desafios_MensalState extends State<desafios_Mensal> {
             ),
             const SizedBox(height: 20),
 
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "ir ao cinema juntos",
               "escolham um filme, aproveitem a experiência e curtam a companhia um outro. o importante é o momento a dois!",
               Icons.movie,
               50,
             ),
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "Fazer um piquenique",
               "preparem um lanche juntos e aproveitem o ar livre. um momento simples, mas cheio de coneção",
               Icons.park,
               200,
             ),
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "Tire uma foto juntos",
               "sejam fotógrafos e modelos! usem a criatividade para tirar fotos divertidas e criativas, criando lenbranças únicas",
               Icons.camera_alt,

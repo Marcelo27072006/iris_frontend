@@ -1,21 +1,121 @@
 import 'package:flutter/material.dart';
 import '/components/HomePageComponents/desafioCaixa.dart';
 import '/components/HomePageComponents/infoPontos.dart';
-import '../components/HomePageComponents/premioCaixaHomePage.dart';
-import '../components/HomePageComponents/usoCaixa.dart';
-import '../page/UserProfilePage.dart'; 
+import '/components/HomePageComponents/premioCaixaHomePage.dart';
+import '/components/HomePageComponents/usoCaixa.dart';
+import '/page/UserProfilePage.dart';
+import '/components/HomePageComponents/faixarosa.dart';
+import '/page/temporizador.dart';
+import 'dart:async';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    this.nome = '',
+    this.email = '',
+  });
+
   final String title;
+  final String nome;
+  final String email;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String nomeUsuario = "caio";
-  double tempoDeUsoHoras = 16;
+  late String nomeUsuario;
+  late String emailUsuario;
+
+  int tempoDeUsoSegundos = 0;
+  Timer? _timer;
+  bool estaRodando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    nomeUsuario = widget.nome;
+    emailUsuario = widget.email;
+    iniciarTemporizador();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final args =
+        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null) {
+      setState(() {
+        nomeUsuario = args['nome'] ?? widget.nome;
+        emailUsuario = args['email'] ?? widget.email;
+      });
+    }
+  }
+
+  void iniciarTemporizador() {
+    if (_timer == null || !_timer!.isActive) {
+      estaRodando = true;
+      _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+        if (estaRodando) {
+          setState(() {
+            tempoDeUsoSegundos++;
+          });
+        }
+      });
+    } else {
+      // Se o temporizador já está rodando, não faz nada
+      setState(() {
+        estaRodando = true;
+      });
+      return;
+    }
+  }
+
+  void pausarTemporizador() {
+    setState(() {
+      estaRodando = false;
+    });
+  }
+
+  void resetarTemporizador() {
+    setState(() {
+      tempoDeUsoSegundos = 0;
+      estaRodando = false;
+    });
+    _timer?.cancel();
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<void> abrirTemporizador() async {
+    final segundosRetornados = await Navigator.push<int>(
+      context,
+      MaterialPageRoute(
+        builder:
+            (context) => TemporizadorPage(
+              nomeUsuario: nomeUsuario,
+              emailUsuario: emailUsuario,
+              tempoSegundos: tempoDeUsoSegundos,
+              estaRodando: estaRodando,
+              iniciar: iniciarTemporizador,
+              pausar: pausarTemporizador,
+              resetar: resetarTemporizador,
+            ),
+      ),
+    );
+
+    if (segundosRetornados != null) {
+      setState(() {
+        tempoDeUsoSegundos = segundosRetornados;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,68 +145,19 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       );
                     },
-                    child: const Icon(Icons.person, size: 50, color: Colors.grey),
+                    child: const Icon(
+                      Icons.person,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
                   ),
                 ],
               ),
             ),
             const SizedBox(height: 30),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(30),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFFD893E3), Color(0xFFE24CD9)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RichText(
-                    text: TextSpan(
-                      children: [
-                        TextSpan(
-                          text:
-                              "Olá, ${nomeUsuario[0].toUpperCase()}${nomeUsuario.substring(1)} ",
-                          style: const TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const TextSpan(
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w300,
-                            color: Color.fromARGB(220, 214, 214, 214),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      InfoPontos(
-                        valor: "4.056",
-                        legenda: "Pontos dis..",
-                        titulo: "Pontos Disponíveis",
-                        texto: "Esses são os pontos que você acumulou.",
-                      ),
-                      InfoPontos(
-                        valor: "4.056",
-                        legenda: "Pontos dis..",
-                        titulo: "Pontos Disponíveis",
-                        texto: "Esses são os pontos que você acumulou.",
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+
+            Faixarosa(nomeUsuario: nomeUsuario, emailUsuario: emailUsuario),
+
             const SizedBox(height: 40),
             const Align(
               alignment: Alignment.centerLeft,
@@ -121,9 +172,10 @@ class _MyHomePageState extends State<MyHomePage> {
             const SizedBox(height: 20),
             LayoutBuilder(
               builder: (context, constraints) {
-                int crossAxisCount = constraints.maxWidth < 350
-                    ? 1
-                    : constraints.maxWidth < 600
+                int crossAxisCount =
+                    constraints.maxWidth < 350
+                        ? 1
+                        : constraints.maxWidth < 600
                         ? 2
                         : 3;
                 return GridView.count(
@@ -154,7 +206,17 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const SizedBox(height: 30),
-            usoCaixa(),
+            usoCaixa(
+              context,
+              nomeUsuario,
+              emailUsuario,
+              tempoDeUsoSegundos,
+              estaRodando,
+              iniciarTemporizador,
+              pausarTemporizador,
+              resetarTemporizador,
+              abrirTemporizador,
+            ),
             const SizedBox(height: 40),
             const Align(
               alignment: Alignment.centerLeft,
@@ -171,9 +233,17 @@ class _MyHomePageState extends State<MyHomePage> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
-                  premioCaixa("Camiseta exclusiva", Icons.emoji_events, "5.000 pontos"),
+                  premioCaixa(
+                    "Camiseta exclusiva",
+                    Icons.emoji_events,
+                    "5.000 pontos",
+                  ),
                   const SizedBox(height: 10),
-                  premioCaixa("Caneca personalizada", Icons.local_cafe, "2.000 pontos"),
+                  premioCaixa(
+                    "Caneca personalizada",
+                    Icons.local_cafe,
+                    "2.000 pontos",
+                  ),
                   const SizedBox(height: 10),
                   premioCaixa("Adesivos", Icons.sticky_note_2, "1.000 pontos"),
                   const SizedBox(height: 10),

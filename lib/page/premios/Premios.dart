@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '/page/HomePage.dart';
+import '../home_page.dart';
 
 class PremiosPage extends StatefulWidget {
   final String titulo;

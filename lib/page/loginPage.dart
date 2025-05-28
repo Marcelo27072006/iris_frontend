@@ -1,42 +1,107 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../../components/styleComponents/my_buttom.dart';
-import '/components/styleComponents/my_textField.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatelessWidget {
-  LoginPage({super.key});
+import '../components/styleComponents/my_buttom.dart';
+import '../components/styleComponents/my_textField.dart';
 
+class loginPage extends StatefulWidget {
+  const loginPage({super.key});
+
+  @override
+  State<loginPage> createState() => _loginPageState();
+}
+
+class _loginPageState extends State<loginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
+  final String baseUrl = 'http://192.168.100.112:3000';
+
+  Future<void> loginUser(String email, String password) async {
+    final String url = '$baseUrl/auth/login';
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email, 'password': password}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final token = data['token'];
+        final user = data['user'];
+
+        if (token != null) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', token);
+        }
+
+        final String nomeUsuario = user['name'] ?? 'Usuário';
+        final String emailUsuario = user['email'] ?? email;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login feito com sucesso!')),
+        );
+
+        Navigator.pushReplacementNamed(
+          context,
+          '/home',
+          arguments: {'nome': nomeUsuario, 'email': emailUsuario},
+        );
+      } else {
+        final error = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error['message'] ?? 'Email ou senha inválidos'),
+          ),
+        );
+      }
+    } catch (e) {
+      print('Erro de conexão: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro de rede. Verifique a conexão.')),
+      );
+    }
+  }
+
   void signUserIn() {
-    print('Botão pressionado');
+    final email = emailController.text.trim();
+    final password = passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Preencha todos os campos')));
+      return;
+    }
+
+    loginUser(email, password);
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 500), // Limitando a largura
+              constraints: const BoxConstraints(maxWidth: 500),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    SizedBox(height: 30),
-
-                    // logo
+                    const SizedBox(height: 30),
                     Container(
                       width: 150,
                       height: 150,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(75),
-                        boxShadow: [
+                        boxShadow: const [
                           BoxShadow(
                             color: Colors.black26,
                             blurRadius: 10,
@@ -52,58 +117,40 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    SizedBox(height: 30),
-
-                    // Bem-vindo!
-                    Text(
-                      'Bem vindo de volta à Iris!',
+                    const SizedBox(height: 30),
+                    const Text(
+                      'Bem-vindo de volta à Iris!',
                       style: TextStyle(color: Colors.black, fontSize: 20),
                       textAlign: TextAlign.center,
                     ),
-
-                    SizedBox(height: 25),
-
-                    // Campo de email
+                    const SizedBox(height: 25),
                     MyTextfield(
                       Controller: emailController,
                       hintText: 'Email',
                       obscureText: false,
-                      prefixIcon: Icon(Icons.email),
+                      prefixIcon: const Icon(Icons.email),
                     ),
-
-                    SizedBox(height: 20),
-
-                    // Campo de senha
+                    const SizedBox(height: 20),
                     MyTextfield(
                       Controller: passwordController,
-                      hintText: 'Password',
-                      prefixIcon: Icon(Icons.lock),
+                      hintText: 'Senha',
+                      prefixIcon: const Icon(Icons.lock),
                       obscureText: true,
                     ),
-
-                    SizedBox(height: 10),
-
-                    // Esqueceu a senha
+                    const SizedBox(height: 10),
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
                         onPressed: () {},
-                        child: Text(
+                        child: const Text(
                           'Esqueceu a senha?',
                           style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ),
-
-                    SizedBox(height: 20),
-
-                    // Botão de login
+                    const SizedBox(height: 20),
                     MyButtom(onTap: signUserIn, hintText: 'Login'),
-
-                    SizedBox(height: 30),
-
-                    // Divisor
+                    const SizedBox(height: 30),
                     Row(
                       children: [
                         Expanded(
@@ -112,8 +159,8 @@ class LoginPage extends StatelessWidget {
                             color: Colors.grey[500],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0),
                           child: Text(
                             'ou continuar com',
                             style: TextStyle(color: Colors.black),
@@ -127,14 +174,11 @@ class LoginPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    SizedBox(height: 30),
-
-                    // Botão Google
+                    const SizedBox(height: 30),
                     GestureDetector(
-                      onTap: () {}, // Você pode adicionar ação depois
+                      onTap: () {},
                       child: Container(
-                        padding: EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(15),
@@ -143,7 +187,7 @@ class LoginPage extends StatelessWidget {
                               color: Colors.black.withOpacity(0.2),
                               spreadRadius: 2,
                               blurRadius: 5,
-                              offset: Offset(0, 3),
+                              offset: const Offset(0, 3),
                             ),
                           ],
                         ),
@@ -153,10 +197,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ),
                     ),
-
-                    SizedBox(height: 20),
-
-                    // Registrar-se
+                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -166,8 +207,10 @@ class LoginPage extends StatelessWidget {
                         ),
                         const SizedBox(width: 4),
                         GestureDetector(
-                          onTap: () {}, // Pode colocar navegação para registro
-                          child: Text(
+                          onTap: () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                          child: const Text(
                             'Registre-se agora',
                             style: TextStyle(
                               color: Colors.blue,
@@ -184,8 +227,7 @@ class LoginPage extends StatelessWidget {
                         ),
                       ],
                     ),
-
-                    SizedBox(height: 25),
+                    const SizedBox(height: 25),
                   ],
                 ),
               ),

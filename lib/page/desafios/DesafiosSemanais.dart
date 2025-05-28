@@ -98,19 +98,19 @@ class _DesafiosSemanaisPageState extends State<DesafiosSemanaisPage> {
             ),
             const SizedBox(height: 20),
 
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "Lavar Pratos",
               "Lavar pratos juntos pode ser um momento de conexão. Deixe o celular de lado e aproveite!",
               Icons.cleaning_services,
               10,
             ),
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "Fazer uma caminhada",
               "Caminhem juntos, conversem e curtam o momento. O celular pode esperar!",
               Icons.directions_walk,
               100,
             ),
-            premioCaixaDesaifos(
+            premioCaixaDesafios(
               "Tire uma foto juntos",
               "Tirem a foto, depois aproveitem o momento. O melhor registro é a lembrança!",
               Icons.camera_alt,
