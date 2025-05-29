@@ -52,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://192.168.100.112:3000/auth/cadastro'),
+        Uri.parse('http://192.168.221.62:3000/auth/cadastro'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'name': name, 'email': email, 'password': password}),
       );
@@ -61,7 +61,7 @@ class _SignUpPageState extends State<SignUpPage> {
         // Redireciona para a HomePage com os dados do usuário
         Navigator.pushReplacementNamed(
           context,
-          '/home',
+          '/login',
           arguments: {'nome': name, 'email': email},
         );
       } else {

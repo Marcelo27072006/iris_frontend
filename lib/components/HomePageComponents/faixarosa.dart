@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 import '/components/HomePageComponents/infoPontos.dart';
 
-class Faixarosa extends StatelessWidget {
+class Faixarosa extends StatefulWidget {
   final String nomeUsuario;
   final String emailUsuario;
 
@@ -12,7 +15,51 @@ class Faixarosa extends StatelessWidget {
   });
 
   @override
+  State<Faixarosa> createState() => _FaixarosaState();
+}
+
+class _FaixarosaState extends State<Faixarosa> {
+  double pontosAtuais = 0;
+  double pontosDiario = 0;
+  bool carregando = true;
+
+  @override
+  void initState() {
+    super.initState();
+    buscarPontosDoUsuario();
+  }
+
+  Future<void> buscarPontosDoUsuario() async {
+    final uri = Uri.parse(
+      'http://192.168.221.62:3000/user/email/${widget.emailUsuario}',
+    ); // substitua pelo seu IP/porta
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final dados = json.decode(response.body);
+        setState(() {
+          pontosAtuais = double.tryParse(dados['pontosAtuais'].toString()) ?? 0;
+          pontosDiario = double.tryParse(dados['pontosDiario'].toString()) ?? 0;
+          carregando = false;
+        });
+      } else {
+        print('Erro ao buscar pontos: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Erro ao buscar pontos: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final nome =
+        widget.nomeUsuario.isNotEmpty
+            ? widget.nomeUsuario[0].toUpperCase() +
+                widget.nomeUsuario.substring(1)
+            : 'Usuário';
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(30),
@@ -30,44 +77,41 @@ class Faixarosa extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text:
-                      "Olá, ${nomeUsuario.isNotEmpty ? nomeUsuario[0].toUpperCase() + nomeUsuario.substring(1) : 'Usuário'} ",
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+          Text(
+            "Olá, $nome",
+            style: const TextStyle(
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 10),
           Text(
-            "Email: $emailUsuario",
+            "Email: ${widget.emailUsuario}",
             style: const TextStyle(color: Colors.white70, fontSize: 16),
           ),
           const SizedBox(height: 30),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: const [
-              InfoPontos(
-                valor: "4.056",
-                legenda: "Pontos dis..",
-                titulo: "Pontos Disponíveis",
-                texto: "Esses são os pontos que você acumulou.",
+          carregando
+              ? const Center(
+                child: CircularProgressIndicator(color: Colors.white),
+              )
+              : Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  InfoPontos(
+                    valor: pontosAtuais.toStringAsFixed(0),
+                    legenda: "Pontos at...",
+                    titulo: "Pontos Atuais",
+                    texto: "Esses são os pontos disponíveis no momento.",
+                  ),
+                  InfoPontos(
+                    valor: pontosDiario.toStringAsFixed(0),
+                    legenda: "Pontos diá..",
+                    titulo: "Pontos Diários",
+                    texto: "Esses são os pontos que você ganha diariamente.",
+                  ),
+                ],
               ),
-              InfoPontos(
-                valor: "500",
-                legenda: "Pontos diá..",
-                titulo: "Pontos Diários",
-                texto: "Esses são os pontos que você ganha diariamente.",
-              ),
-            ],
-          ),
         ],
       ),
     );

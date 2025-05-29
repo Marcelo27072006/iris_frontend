@@ -17,7 +17,7 @@ class _loginPageState extends State<loginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
-  final String baseUrl = 'http://192.168.100.112:3000';
+  final String baseUrl = 'http://192.168.221.62:3000';
 
   Future<void> loginUser(String email, String password) async {
     final String url = '$baseUrl/auth/login';

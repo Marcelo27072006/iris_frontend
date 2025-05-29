@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.18.4:3000/usuario/validar-token'),
+        Uri.parse('http://192.168.221.62:3000/usuario/validar-token'),
         headers: {'Authorization': 'Bearer $token'},
       );
 

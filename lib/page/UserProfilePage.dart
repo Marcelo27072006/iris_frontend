@@ -55,7 +55,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return;
     }
 
-    final url = Uri.parse("http://192.168.100.112:3000/auth/perfil");
+    final url = Uri.parse("http://192.168.221.62:3000/auth/perfil");
 
     try {
       final response = await http.get(
@@ -102,7 +102,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
       return;
     }
 
-    final url = Uri.parse("http://192.168.100.112:3000/auth/delete");
+    final url = Uri.parse("http://192.168.221.62:3000/auth/delete");
 
     try {
       final response = await http.delete(
